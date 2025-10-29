@@ -1,0 +1,108 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var userId = HttpContextAccessor.HttpContext?.Session.GetInt32("UserId");
+    var userName = HttpContextAccessor.HttpContext?.Session.GetString("UserName");
+    var isAdmin = HttpContextAccessor.HttpContext?.Session.GetString("IsAdmin") == "1";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🚌 Bus Booking Web App</title>
+
+    <!-- 🌈 Fonts & CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<body>
+    <!-- 🌐 Modern Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <span class="fs-4">🚌</span> 
+                <span>BusBooking</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <!-- 🧭 Left Menu -->
+                <ul class="navbar-nav">
+                    @if (userId == null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Login">Login</a>
+                        </li>
+                    }
+                    else if (isAdmin)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Admin/Dashboard">Dashboard</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Bus/List">Trips</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Booking/MyBookings">My Bookings</a>
+                        </li>
+                    }
+                </ul>
+
+                <!-- 🔐 Right Side -->
+                <ul class="navbar-nav align-items-center">
+                    @if (userId != null)
+                    {
+                        <li class="nav-item me-3 text-light">
+                            👋 Welcome, <strong>@userName</strong>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary btn-sm px-3" href="/Account/Logout">Logout</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 📄 Page Content -->
+    <main class="container my-5">
+        @RenderBody()
+    </main>
+
+    <!-- 🦶 Modern Footer -->
+    <footer>
+        <div class="container">
+            <p class="mb-1">
+                © @DateTime.Now.Year Bus Booking Web App | Designed with 💙 by <strong>VEDANT DESAI</strong>
+            </p>
+            <p class="mb-0">
+                <a href="/">Home</a> • 
+                <a href="/Privacy">Privacy Policy</a> • 
+                <a href="mailto:support@busbooking.com">Contact</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- ⚙️ JS Scripts -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
